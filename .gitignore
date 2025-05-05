@@ -1,0 +1,25 @@
+# 모델 파일 (용량 큼)
+yolov5s.pt
+*.pt
+
+# 환경 변수 파일
+.env
+
+# 임시 이미지 저장 폴더
+temp/
+
+# Python 캐시
+__pycache__/
+*.pyc
+
+# Jupyter 노트북 자동 저장
+.ipynb_checkpoints/
+
+# VSCode, PyCharm, IntelliJ 설정 폴더
+.vscode/
+.idea/
+*.iml
+
+# OS 별 무시 항목
+.DS_Store
+Thumbs.db
