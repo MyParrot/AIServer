@@ -56,23 +56,17 @@ def upload_frame():
     img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
     print("프레임 수신 완료:", img.shape)
-    summary, image_path = process_frame(img)
-    print('****',summary)
+    result = process_frame(img)
+    if result is None:
+        return jsonify({"status": "skipped"}), 200
+    summary, image_path = result
+
+    print('****', summary)
     print('****',image_path)
 
 
-
-    # if summary:
-    #     return jsonify({
-    #         "status": "success",
-    #         "summary": summary
-    #     })
-    # else:
-    #     return jsonify({
-    #         "status": "no_summary"
-    #     })
-
     # 3. S3 업로드
+
     try:
         with open(image_path, 'rb') as file:
             files = {'file': (os.path.basename(image_path), file, 'image/jpeg')}
@@ -95,10 +89,11 @@ def upload_frame():
 
     except Exception as e:
         return jsonify({
-            "status": "error",
+            "status": "success" if summary else "no_summary",
             "summary": summary,
-            "message": str(e)
-        }), 500
+            "s3_url": None
+        })
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

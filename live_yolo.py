@@ -54,7 +54,7 @@ def process_frame(img):
         frames.append(img)
         detected_classes.update(current_classes)
 
-        if (time.time() - record_start_time > record_duration) or len(frames) >= frame_limit: #조건 (20)장 에 맞는지 확인
+        if (time.time() - record_start_time > record_duration) and len(frames) >= frame_limit: #조건 (20)장 에 맞는지 확인
             if len(frames) > frame_limit:
                 step = len(frames) // frame_limit
                 selected_frames = frames[::step][:frame_limit]
@@ -79,14 +79,16 @@ def process_frame(img):
                 print("yolo LLM 요약 결과:", summary)
                 processing_llm = False
                 return summary, save_dir
+
             except Exception as e:
                 print("LLM 호출 중 오류 발생:", str(e))
+                processing_llm = False
+                return "", ""
 
-                # LLM 끝났으니 다시 활성화
 
+            finally:
+                processing_llm = False
+                frames = []
+                recording = False
+                detected_classes = set()
 
-            frames = []
-            recording = False
-            detected_classes = set()
-
-            #return summary
