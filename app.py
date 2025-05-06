@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flasgger import Swagger
 import os, base64, re, cv2, numpy as np
 from live_yolo import process_frame  # YOLO 감지 함수
+import requests
 
 # temp 폴더 생성
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -55,18 +56,49 @@ def upload_frame():
     img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
     print("프레임 수신 완료:", img.shape)
-    summary = process_frame(img)
+    summary, image_path = process_frame(img)
     print('****',summary)
+    print('****',image_path)
 
-    if summary:
+
+
+    # if summary:
+    #     return jsonify({
+    #         "status": "success",
+    #         "summary": summary
+    #     })
+    # else:
+    #     return jsonify({
+    #         "status": "no_summary"
+    #     })
+
+    # 3. S3 업로드
+    try:
+        with open(image_path, 'rb') as file:
+            files = {'file': (os.path.basename(image_path), file, 'image/jpeg')}
+            data = {'userName': 'my_parrots_ai_gogo'}
+            res = requests.post(SPRING_UPLOAD_URL, files=files, data=data)
+
+        if res.status_code == 200:
+            s3_url = res.json()['data']
+            return jsonify({
+                "status": "success" if summary else "no_summary",
+                "summary": summary,
+                "s3_url": s3_url
+            })
+        else:
+            return jsonify({
+                "status": "upload_failed",
+                "summary": summary,
+                "error": res.text
+            }), 500
+
+    except Exception as e:
         return jsonify({
-            "status": "success",
-            "summary": summary
-        })
-    else:
-        return jsonify({
-            "status": "no_summary"
-        })
+            "status": "error",
+            "summary": summary,
+            "message": str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

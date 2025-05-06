@@ -78,7 +78,7 @@ def process_frame(img):
                 summary = multimodalLLM(save_dir, detected_classes)
                 print("yolo LLM 요약 결과:", summary)
                 processing_llm = False
-                return summary
+                return summary, save_dir
             except Exception as e:
                 print("LLM 호출 중 오류 발생:", str(e))
 
@@ -89,4 +89,4 @@ def process_frame(img):
             recording = False
             detected_classes = set()
 
-            return summary
+            #return summary
