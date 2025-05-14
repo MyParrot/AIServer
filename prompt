@@ -5,7 +5,7 @@ Use friendly and calming language, and include distance and direction informatio
 If multiple objects are present, prioritize by danger level.
 The goal is to guide them safely through the current situation.
 Please summarize concisely in one line.
-Please answer with [action to be taken now] + [description of the situation]
+Please answer with action to be taken now + description of the situation
 
 Stop slowly. A dog is approaching from ahead.
 
