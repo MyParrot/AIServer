@@ -7,8 +7,8 @@ from ultralytics import YOLO
 import numpy as np
 from Gemini_str import multimodalLLM  # LLM 처리 함수
 
-model = YOLO("yolov5s.pt")
-model.verbose = False
+# model = YOLO("yolov5s.pt")
+# model.verbose = False
 
 DANGEROUS_CLASSES = ['car', 'motorcycle', 'bicycle', 'bench', 'person']
 TEMP_DIR = 'temp'
@@ -41,18 +41,23 @@ def process_frame(img):
     if processing_llm: #LLM 분석상태면 프래임 안받음
         return
 
-    results = model(img)[0]
-    current_classes = [model.names[int(cls)] for cls in results.boxes.cls]
+    # results = model(img)[0]
+    # current_classes = [model.names[int(cls)] for cls in results.boxes.cls]
+    #
+    # if not recording and any(obj in DANGEROUS_CLASSES for obj in current_classes):  # 위험 객체 확인시 시작
+    #     recording = True
+    #     record_start_time = time.time()
+    #     frames = []
+    #     detected_classes = set(current_classes)
 
-    if not recording and any(obj in DANGEROUS_CLASSES for obj in current_classes):  # 위험 객체 확인시 시작
+    if not recording:
         recording = True
         record_start_time = time.time()
         frames = []
-        detected_classes = set(current_classes)
 
     if recording:
         frames.append(img)
-        detected_classes.update(current_classes)
+        #detected_classes.update(current_classes)
 
         if (time.time() - record_start_time > record_duration) and len(frames) >= frame_limit: #조건 (20)장 에 맞는지 확인
             if len(frames) > frame_limit:
