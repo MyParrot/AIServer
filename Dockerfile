@@ -2,6 +2,7 @@ FROM python:3.10-slim
 
 # 필수 시스템 라이브러리 설치 (OpenCV, torch, matplotlib 등용)
 RUN apt-get update && apt-get install -y \
+    curl \
     libgl1-mesa-glx \
     libglib2.0-0 \
     ffmpeg \
