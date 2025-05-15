@@ -15,7 +15,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # YOLO 모델 다운로드 (최신 버전 경로 확인 필요)
-RUN curl -L -o yolov5s.pt https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5s.pt
+RUN curl -L -o yolov5s.pt https://github.com/ultralytics/yolov5/releases/download/v6.2/yolov5s.pt
 
 # 소스 코드 전체 복사 (app.py, live_yolo.py, Gemini_str.py 등)
 COPY . .
