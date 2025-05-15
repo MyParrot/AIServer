@@ -65,35 +65,5 @@ def upload_frame():
     print('****',image_path)
 
 
-    # 3. S3 업로드
-
-    try:
-        with open(image_path, 'rb') as file:
-            files = {'file': (os.path.basename(image_path), file, 'image/jpeg')}
-            data = {'userName': 'my_parrots_ai_gogo'}
-            res = requests.post(SPRING_UPLOAD_URL, files=files, data=data)
-
-        if res.status_code == 200:
-            s3_url = res.json()['data']
-            return jsonify({
-                "status": "success" if summary else "no_summary",
-                "summary": summary,
-                "s3_url": s3_url
-            })
-        else:
-            return jsonify({
-                "status": "upload_failed",
-                "summary": summary,
-                "error": res.text
-            }), 500
-
-    except Exception as e:
-        return jsonify({
-            "status": "success" if summary else "no_summary",
-            "summary": summary,
-            "s3_url": None
-        })
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
