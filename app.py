@@ -4,6 +4,7 @@ from flasgger import Swagger
 import os, base64, re, cv2, numpy as np
 from live_yolo import process_frame  # YOLO 감지 함수
 import requests
+import shutil
 
 # temp 폴더 생성
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -64,6 +65,8 @@ def upload_frame():
     print('****', summary)
     print('****',image_path)
 
+    folder_path = os.path.dirname(image_path)
+
     # 3. S3 업로드
 
     try:
@@ -92,6 +95,13 @@ def upload_frame():
             "summary": summary,
             "s3_url": None
         })
+
+    finally:
+        try:
+            shutil.rmtree(folder_path)
+            print(f"[정리] temp 폴더 삭제 완료: {folder_path}")
+        except Exception as cleanup_error:
+            print(f"[경고] temp 폴더 삭제 실패: {cleanup_error}")
 
 
 if __name__ == '__main__':
