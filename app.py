@@ -98,10 +98,16 @@ def upload_frame():
 
     finally:
         try:
-            shutil.rmtree(folder_path)
-            print(f"[정리] temp 폴더 삭제 완료: {folder_path}")
+            folder_path = os.path.abspath(os.path.dirname(image_path))
+            temp_root = os.path.abspath("temp")
+
+            if os.path.exists(folder_path) and os.path.commonpath([folder_path, temp_root]) == temp_root:
+                shutil.rmtree(folder_path)
+
+            os.makedirs(temp_root, exist_ok=True)
+
         except Exception as cleanup_error:
-            print(f"[경고] temp 폴더 삭제 실패: {cleanup_error}")
+            print(f"폴더 삭제 중 오류 발생: {cleanup_error}")
 
 
 if __name__ == '__main__':
